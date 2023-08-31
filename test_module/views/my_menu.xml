@@ -1,5 +1,0 @@
-<odoo>
-  <data>
-    <menuitem name="My Menu" id="test_module.my_menu" action="test_module.action_my_model_form"/>
-  </data>
-</odoo>
