@@ -9,8 +9,13 @@ class StockPickingInherited(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'stock.picking'
 
+
+    '''
+    Update expected_delivery field when scheduled_date is changed
+    '''
     @api.onchange('scheduled_date')
     def _onchange_scheduled_date(self):
+
         for picking in self:
             if picking.scheduled_date:
                 for move_line in picking.move_line_ids:
@@ -28,13 +33,6 @@ class ScheduledDateProductGrid(models.Model):
         compute='_compute_expected_delivery',
         readonly=True,
         store=True)
-
-
-    @api.onchange('scheduled_date')
-    def _onchange_scheduled_date(self):
-        self._logger.info(f"_onchange_scheduled_date")
-        self._logger.info(f"Value {self.scheduled_date}")
-
 
     '''
     update purchase_order 
@@ -57,9 +55,18 @@ class ScheduledDateProductGrid(models.Model):
 
                     # convert from [datetime.datetime(2023, 9, 2, 14, 22, 16)] to 2023-09-02 14:22:16
                     formatted_dates = scheduled_date.strftime("%Y-%m-%d %H:%M:%S")
-                    if product.expected_delivery == False:
+
+                    # get current date
+                    now_date = datetime.datetime.now()
+
+                    # check if expected_delivery NOT False and scheduled_date is bigger than now_date
+                    if product.expected_delivery == False and scheduled_date != None and scheduled_date > now_date:
+
+                        # set expected_delivery to scheduled_date
                         product.expected_delivery = str(formatted_dates)
+
                     elif scheduled_date != None:
+                        # rewrite expected_delivery to scheduled_date
                         product.expected_delivery = scheduled_date_on_change
 
     '''
