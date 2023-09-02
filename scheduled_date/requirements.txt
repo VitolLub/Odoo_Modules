@@ -1,0 +1,4 @@
+1. Expected Arrival NOT read only
+2. After update Scheduled Date
+3. Operations -> Expected Arrival - > Update Expected Arrival
+4. Filter problem DATE
