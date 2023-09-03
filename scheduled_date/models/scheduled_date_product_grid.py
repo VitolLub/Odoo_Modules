@@ -11,15 +11,15 @@ class PurchaseOrderInherited(models.Model):
     '''
     Update expected_delivery field when scheduled_date is changed
     '''
-    # @api.onchange('date_planned')
-    # def _onchange_scheduled_date(self):
-    #
-    #     for order in self:
-    #         self._logger.info(f'purchase order {order}')
-            # if order.date_planned:
-            #     self._logger.info(f'purchase order {order.date_planned}')
-                # call _compute_expected_delivery function
-                # order._compute_expected_delivery(order.date_planned)
+    @api.onchange('date_planned')
+    def _onchange_scheduled_date(self):
+
+        for order in self:
+            self._logger.info(f'purchase order {order}')
+            if order.date_planned:
+                self._logger.info(f'purchase order {order.date_planned}')
+                product = order.product_id.product_tmpl_id
+                product._compute_expected_delivery(order.date_planned)
 
 class StockPickingInherited(models.Model):
     _logger = logging.getLogger(__name__)
@@ -33,10 +33,12 @@ class StockPickingInherited(models.Model):
     def _onchange_scheduled_date(self):
 
         for picking in self:
-
+            self._logger.info(f'scheduled_date {picking}')
             if picking.scheduled_date:
+                self._logger.info(f'scheduled_date {picking.scheduled_date}')
                 for move_line in picking.move_line_ids:
                     product = move_line.product_id.product_tmpl_id
+                    self._logger.info(f'scheduled_date {product}')
                     product._compute_expected_delivery(picking.scheduled_date)
 
 class ScheduledDateProductGrid(models.Model):
@@ -69,12 +71,13 @@ class ScheduledDateProductGrid(models.Model):
                 matching_orders = self._search_expected_delivery('default_code', product.default_code)
 
                 scheduled_date = matching_orders.mapped('picking_id.scheduled_date')
+                self._logger.info(f'scheduled_date {scheduled_date}')
                 # get newest date from scheduled_date
 
                 # get biggest date from array [datetime.datetime(2023, 8, 29, 12, 45, 33), datetime.datetime(2023, 8, 29, 12, 45, 34)]
                 if len(scheduled_date)!= 0:
                     scheduled_date = reduce(lambda x, y: x if x > y else y, scheduled_date, datetime.datetime.min)
-
+                    self._logger.info(f'scheduled_date2 {scheduled_date}')
                     # convert from [datetime.datetime(2023, 9, 2, 14, 22, 16)] to 2023-09-02 14:22:16
                     formatted_dates = scheduled_date.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -83,13 +86,15 @@ class ScheduledDateProductGrid(models.Model):
 
                     # check if expected_delivery NOT False and scheduled_date is bigger than now_date
                     if product.expected_delivery == False and scheduled_date != None and scheduled_date > now_date:
-
+                        self._logger.info(f'scheduled_date3 {scheduled_date}')
+                        self._logger.info(f'scheduled_date3 {product.expected_delivery}')
                         # set expected_delivery to scheduled_date
                         product.expected_delivery = scheduled_date#str(formatted_dates)
-
+                        self._logger.info(f'DONE')
                     elif scheduled_date != None:
                         # rewrite expected_delivery to scheduled_date
-                        product.expected_delivery = scheduled_date
+                        product.expected_delivery = scheduled_date_on_change
+                        self._logger.info(f'DONE')
 
     '''
     Seacrh purchase order by default code and name
