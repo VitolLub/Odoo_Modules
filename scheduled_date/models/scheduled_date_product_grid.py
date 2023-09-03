@@ -4,6 +4,22 @@ from datetime import datetime, timedelta
 import datetime
 from functools import reduce
 
+class PurchaseOrderInherited(models.Model):
+    _logger = logging.getLogger(__name__)
+    _inherit = 'purchase.order'
+
+    '''
+    Update expected_delivery field when scheduled_date is changed
+    '''
+    # @api.onchange('date_planned')
+    # def _onchange_scheduled_date(self):
+    #
+    #     for order in self:
+    #         self._logger.info(f'purchase order {order}')
+            # if order.date_planned:
+            #     self._logger.info(f'purchase order {order.date_planned}')
+                # call _compute_expected_delivery function
+                # order._compute_expected_delivery(order.date_planned)
 
 class StockPickingInherited(models.Model):
     _logger = logging.getLogger(__name__)
@@ -17,6 +33,7 @@ class StockPickingInherited(models.Model):
     def _onchange_scheduled_date(self):
 
         for picking in self:
+
             if picking.scheduled_date:
                 for move_line in picking.move_line_ids:
                     product = move_line.product_id.product_tmpl_id
@@ -28,7 +45,12 @@ class ScheduledDateProductGrid(models.Model):
     scheduled_date = fields.Many2one('stock.picking', string="stock.picking", required=True)
 
 
-    expected_delivery = fields.Char(
+    # expected_delivery = fields.Char(
+    #     string='Expected Delivery',
+    #     compute='_compute_expected_delivery',
+    #     readonly=True,
+    #     store=True)
+    expected_delivery = fields.Datetime(
         string='Expected Delivery',
         compute='_compute_expected_delivery',
         readonly=True,
@@ -63,11 +85,11 @@ class ScheduledDateProductGrid(models.Model):
                     if product.expected_delivery == False and scheduled_date != None and scheduled_date > now_date:
 
                         # set expected_delivery to scheduled_date
-                        product.expected_delivery = str(formatted_dates)
+                        product.expected_delivery = scheduled_date#str(formatted_dates)
 
                     elif scheduled_date != None:
                         # rewrite expected_delivery to scheduled_date
-                        product.expected_delivery = scheduled_date_on_change
+                        product.expected_delivery = scheduled_date
 
     '''
     Seacrh purchase order by default code and name
@@ -76,7 +98,7 @@ class ScheduledDateProductGrid(models.Model):
         self._logger.info(f'matching_orders {key} and {value}')
         matching_orders = self.env['stock.move.line'].search([
                 ('product_id.'+str(key), '=', value),
-            ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
+            # ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
         return matching_orders
 
