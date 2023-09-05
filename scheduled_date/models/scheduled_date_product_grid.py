@@ -46,12 +46,6 @@ class ScheduledDateProductGrid(models.Model):
     _inherit = 'product.template'
     scheduled_date = fields.Many2one('stock.picking', string="stock.picking", required=True)
 
-
-    # expected_delivery = fields.Char(
-    #     string='Expected Delivery',
-    #     compute='_compute_expected_delivery',
-    #     readonly=True,
-    #     store=True)
     expected_delivery = fields.Datetime(
         string='Expected Delivery',
         compute='_compute_expected_delivery',
@@ -71,30 +65,23 @@ class ScheduledDateProductGrid(models.Model):
                 matching_orders = self._search_expected_delivery('default_code', product.default_code)
 
                 scheduled_date = matching_orders.mapped('picking_id.scheduled_date')
-                self._logger.info(f'scheduled_date {scheduled_date}')
-                # get newest date from scheduled_date
 
                 # get biggest date from array [datetime.datetime(2023, 8, 29, 12, 45, 33), datetime.datetime(2023, 8, 29, 12, 45, 34)]
                 if len(scheduled_date)!= 0:
                     scheduled_date = reduce(lambda x, y: x if x > y else y, scheduled_date, datetime.datetime.min)
-                    self._logger.info(f'scheduled_date2 {scheduled_date}')
-                    # convert from [datetime.datetime(2023, 9, 2, 14, 22, 16)] to 2023-09-02 14:22:16
-                    formatted_dates = scheduled_date.strftime("%Y-%m-%d %H:%M:%S")
 
                     # get current date
                     now_date = datetime.datetime.now()
 
                     # check if expected_delivery NOT False and scheduled_date is bigger than now_date
                     if product.expected_delivery == False and scheduled_date != None and scheduled_date > now_date:
-                        self._logger.info(f'scheduled_date3 {scheduled_date}')
-                        self._logger.info(f'scheduled_date3 {product.expected_delivery}')
+
                         # set expected_delivery to scheduled_date
-                        product.expected_delivery = scheduled_date#str(formatted_dates)
-                        self._logger.info(f'DONE')
+                        product.expected_delivery = scheduled_date
+
                     elif scheduled_date != None:
                         # rewrite expected_delivery to scheduled_date
                         product.expected_delivery = scheduled_date_on_change
-                        self._logger.info(f'DONE')
 
     '''
     Seacrh purchase order by default code and name
@@ -103,7 +90,7 @@ class ScheduledDateProductGrid(models.Model):
         self._logger.info(f'matching_orders {key} and {value}')
         matching_orders = self.env['stock.move.line'].search([
                 ('product_id.'+str(key), '=', value),
-            # ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
+            ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
         return matching_orders
 
