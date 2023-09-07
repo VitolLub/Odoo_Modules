@@ -48,7 +48,7 @@ class ScheduledDateProductGrid(models.Model):
         matching_orders = self.env['purchase.order.line'].search([
                 ('product_id.'+str(key), '=', value),
             ('order_id.date_planned', '>', date),
-            # ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
+            ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
         expected_delivery_dates = matching_orders.mapped('order_id.date_planned')
 
@@ -56,8 +56,6 @@ class ScheduledDateProductGrid(models.Model):
         if len(expected_delivery_dates) != 0:
             expected_delivery_dates = max(expected_delivery_dates)
 
-            self._logger.info(f'matching_orders {matching_orders}')
-            self._logger.info(f'matching_orders2 {expected_delivery_dates}')
             return expected_delivery_dates
 
 
