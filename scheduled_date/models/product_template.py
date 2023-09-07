@@ -43,20 +43,16 @@ class ProductTemplate(models.Model):
     Seacrh purchase order by default code and name
     '''
     def _search_expected_delivery(self, key = None, value= None):
-        self._logger.info(f'matching_orders {key} and {value}')
         date = datetime.datetime.now()
         matching_orders = self.env['purchase.order.line'].search([
                 ('product_id.'+str(key), '=', value),
             ('order_id.date_planned', '>', date),
             ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
-        expected_delivery_dates = matching_orders.mapped('order_id.date_planned')
 
-        # get max date from expected_delivery_dates list
-        if len(expected_delivery_dates) != 0:
-            expected_delivery_dates = max(expected_delivery_dates)
-
-            return expected_delivery_dates
+        if matching_orders:
+            expected_delivery_dates = matching_orders.mapped('order_id.date_planned')
+            return expected_delivery_dates[0]
 
 
 
