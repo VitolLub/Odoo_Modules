@@ -5,7 +5,7 @@ import datetime
 from functools import reduce
 
 
-class ScheduledDateProductGrid(models.Model):
+class ProductTemplate(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.template'
     scheduled_date = fields.Many2one('stock.picking', string="stock.picking", required=True)

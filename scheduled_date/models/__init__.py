@@ -1,3 +1,3 @@
-from . import scheduled_date_product_grid
+from . import product_template
 from . import purchase_order
 from . import stock_picking
