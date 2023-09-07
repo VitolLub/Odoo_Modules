@@ -5,7 +5,7 @@
     'author': 'Lubomir',
     'depends': ['base','mail','product','stock','sale'],
     'data': [
-        'views/scheduled_date_product_grid_view.xml',
+        'views/expected_delivery_product_grid_view.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -33,14 +33,14 @@ class ProductTemplate(models.Model):
                 elif product.expected_delivery == False:
 
                     # set expected_delivery when if date_expected exists into stock.move
-                    product.expected_delivery = self._search_expected_delivery('default_code', product.default_code)
+                    product.expected_delivery = self._search_date_expected('default_code', product.default_code)
 
 
     '''
     Seacrh purchase order by default code and name and get expected_date field
     stock.move -> expected_date
     '''
-    def _search_expected_delivery(self, key = None, value= None):
+    def _search_date_expected(self, key = None, value= None):
         stock_move_data = self.env['stock.move'].search([
                 ('product_id.'+str(key), '=', value),
             ('date_expected', '>', datetime.datetime.now()),
