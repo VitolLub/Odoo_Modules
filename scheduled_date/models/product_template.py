@@ -44,7 +44,7 @@ class ProductTemplate(models.Model):
         stock_move_data = self.env['stock.move'].search([
                 ('product_id.'+str(key), '=', value),
             ('date_expected', '>', datetime.datetime.now()),
-            # ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
+            ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
 
         if stock_move_data:
