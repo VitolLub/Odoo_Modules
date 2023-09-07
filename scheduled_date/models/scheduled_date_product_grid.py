@@ -4,42 +4,6 @@ from datetime import datetime, timedelta
 import datetime
 from functools import reduce
 
-class PurchaseOrderInherited(models.Model):
-    _logger = logging.getLogger(__name__)
-    _inherit = 'purchase.order'
-
-    '''
-    Update expected_delivery field when scheduled_date is changed
-    '''
-    @api.onchange('date_planned')
-    def _onchange_scheduled_date(self):
-
-        for order in self:
-            self._logger.info(f'purchase order {order}')
-            if order.date_planned:
-                self._logger.info(f'purchase order {order.date_planned}')
-                product = order.product_id.product_tmpl_id
-                product._compute_expected_delivery(order.date_planned)
-
-class StockPickingInherited(models.Model):
-    _logger = logging.getLogger(__name__)
-    _inherit = 'stock.picking'
-
-
-    '''
-    Update expected_delivery field when scheduled_date is changed
-    '''
-    @api.onchange('scheduled_date')
-    def _onchange_scheduled_date(self):
-
-        for picking in self:
-            self._logger.info(f'scheduled_date {picking}')
-            if picking.scheduled_date:
-                self._logger.info(f'scheduled_date {picking.scheduled_date}')
-                for move_line in picking.move_line_ids:
-                    product = move_line.product_id.product_tmpl_id
-                    self._logger.info(f'scheduled_date {product}')
-                    product._compute_expected_delivery(picking.scheduled_date)
 
 class ScheduledDateProductGrid(models.Model):
     _logger = logging.getLogger(__name__)
@@ -62,37 +26,39 @@ class ScheduledDateProductGrid(models.Model):
     def _compute_expected_delivery(self,scheduled_date_on_change=None):
         for product in self:
             if product.default_code != False:
-                matching_orders = self._search_expected_delivery('default_code', product.default_code)
+                expected_delivery_dates = self._search_expected_delivery('default_code', product.default_code)
 
-                scheduled_date = matching_orders.mapped('picking_id.scheduled_date')
+                # check if expected_delivery NOT False and scheduled_date is bigger than now_date
+                if product.expected_delivery == False:
 
-                # get biggest date from array [datetime.datetime(2023, 8, 29, 12, 45, 33), datetime.datetime(2023, 8, 29, 12, 45, 34)]
-                if len(scheduled_date)!= 0:
-                    scheduled_date = reduce(lambda x, y: x if x > y else y, scheduled_date, datetime.datetime.min)
+                    # set expected_delivery to scheduled_date
+                    product.expected_delivery = expected_delivery_dates
 
-                    # get current date
-                    now_date = datetime.datetime.now()
+                elif scheduled_date_on_change != None:
 
-                    # check if expected_delivery NOT False and scheduled_date is bigger than now_date
-                    if product.expected_delivery == False and scheduled_date != None and scheduled_date > now_date:
-
-                        # set expected_delivery to scheduled_date
-                        product.expected_delivery = scheduled_date
-
-                    elif scheduled_date != None:
-                        # rewrite expected_delivery to scheduled_date
-                        product.expected_delivery = scheduled_date_on_change
+                    # rewrite expected_delivery to scheduled_date
+                    product.expected_delivery = scheduled_date_on_change
 
     '''
     Seacrh purchase order by default code and name
     '''
     def _search_expected_delivery(self, key = None, value= None):
         self._logger.info(f'matching_orders {key} and {value}')
-        matching_orders = self.env['stock.move.line'].search([
+        date = datetime.datetime.now()
+        matching_orders = self.env['purchase.order.line'].search([
                 ('product_id.'+str(key), '=', value),
-            ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
+            ('order_id.date_planned', '>', date),
+            # ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
-        return matching_orders
+        expected_delivery_dates = matching_orders.mapped('order_id.date_planned')
+
+        # get max date from expected_delivery_dates list
+        if len(expected_delivery_dates) != 0:
+            expected_delivery_dates = max(expected_delivery_dates)
+
+            self._logger.info(f'matching_orders {matching_orders}')
+            self._logger.info(f'matching_orders2 {expected_delivery_dates}')
+            return expected_delivery_dates
 
 
 
