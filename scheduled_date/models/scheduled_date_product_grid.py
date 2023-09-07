@@ -26,24 +26,15 @@ class ScheduledDateProductGrid(models.Model):
     def _compute_expected_delivery(self,scheduled_date_on_change=None):
         for product in self:
             if product.default_code != False:
-                expected_delivery_dates = self._search_expected_delivery('default_code', product.default_code)
+                self._search_expected_delivery('default_code', product.default_code,product,scheduled_date_on_change)
 
-                # check if expected_delivery NOT False and scheduled_date is bigger than now_date
-                if product.expected_delivery == False:
 
-                    # set expected_delivery to scheduled_date
-                    product.expected_delivery = expected_delivery_dates
-
-                elif scheduled_date_on_change != None:
-
-                    # rewrite expected_delivery to scheduled_date
-                    product.expected_delivery = scheduled_date_on_change
 
     '''
     Seacrh purchase order by default code and name
     '''
-    def _search_expected_delivery(self, key = None, value= None):
-        self._logger.info(f'matching_orders {key} and {value}')
+    def _search_expected_delivery(self, key = None, value= None, product,scheduled_date_on_change):
+        # self._logger.info(f'matching_orders {key} and {value}')
         date = datetime.datetime.now()
         matching_orders = self.env['purchase.order.line'].search([
                 ('product_id.'+str(key), '=', value),
@@ -56,9 +47,19 @@ class ScheduledDateProductGrid(models.Model):
         if len(expected_delivery_dates) != 0:
             expected_delivery_dates = max(expected_delivery_dates)
 
-            self._logger.info(f'matching_orders {matching_orders}')
-            self._logger.info(f'matching_orders2 {expected_delivery_dates}')
-            return expected_delivery_dates
+            # self._logger.info(f'matching_orders {matching_orders}')
+            # self._logger.info(f'matching_orders2 {expected_delivery_dates}')
+
+            # check if expected_delivery NOT False and scheduled_date is bigger than now_date
+            if product.expected_delivery == False:
+
+                # set expected_delivery to scheduled_date
+                product.expected_delivery = expected_delivery_dates
+
+            elif scheduled_date_on_change != None:
+
+                # rewrite expected_delivery to scheduled_date
+                product.expected_delivery = scheduled_date_on_change
 
 
 
