@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-    <!-- Display Expected Delivery on Product Grid -->
+    <!-- Display Expected Delivery on Product Grid. View kanban -->
     <record id="view_product_grid_form_inherit" model="ir.ui.view">
         <field name="name">custom.product.kanban</field>
         <field name="model">product.template</field>
@@ -14,7 +14,19 @@
             </xpath>
         </field>
     </record>
-    <!-- Display Expected Delivery on Product Grid -->
+     <!-- Display Expected Delivery on Product Grid View list-->
+    <record id="view_product_list_form_inherit" model="ir.ui.view">
+        <field name="name">custom.product.list</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="expected_delivery" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Display Expected Delivery on Product Grid-->
     <record id="scheduled_date_filter_view" model="ir.ui.view">
         <field name="name">product.template.custom.filter</field>
         <field name="model">product.template</field>

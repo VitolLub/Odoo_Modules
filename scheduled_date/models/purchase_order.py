@@ -6,14 +6,17 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
     '''
-    Update expected_delivery field when scheduled_date is changed
+    Update expected_delivery field when date_planned is changed
+    purchase.order -> date_planned
     '''
     @api.onchange('date_planned')
     def _onchange_scheduled_date(self):
 
         for order in self:
-            self._logger.info(f'purchase order1 {order}')
             if order.date_planned:
-                self._logger.info(f'purchase order1 {order.date_planned}')
-                product = order.product_id.product_tmpl_id
-                product._compute_expected_delivery(order.date_planned)
+
+                # get products from order line
+                products = order.order_line.product_id
+
+                # run _compute_expected_delivery and update expected_delivery field
+                products.product_tmpl_id._compute_expected_delivery(order.date_planned)

@@ -8,7 +8,6 @@ from functools import reduce
 class ProductTemplate(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.template'
-    scheduled_date = fields.Many2one('stock.picking', string="stock.picking", required=True)
 
     expected_delivery = fields.Datetime(
         string='Expected Delivery',
@@ -17,42 +16,39 @@ class ProductTemplate(models.Model):
         store=True)
 
     '''
-    update purchase_order 
-    date_planned field
+    computing and updating expected_delivery field
     '''
 
-    @api.onchange('scheduled_date')
-    @api.depends('scheduled_date')
     def _compute_expected_delivery(self,scheduled_date_on_change=None):
         for product in self:
             if product.default_code != False:
-                expected_delivery_dates = self._search_expected_delivery('default_code', product.default_code)
 
-                # check if expected_delivery NOT False and scheduled_date is bigger than now_date
-                if product.expected_delivery == False:
+                # check if scheduled_date_on_change NOT None and rewrite expected_delivery
+                if scheduled_date_on_change != None:
 
-                    # set expected_delivery to scheduled_date
-                    product.expected_delivery = expected_delivery_dates
-
-                elif scheduled_date_on_change != None:
-
-                    # rewrite expected_delivery to scheduled_date
+                    # rewrite expected_delivery
                     product.expected_delivery = scheduled_date_on_change
 
+                # check if expected_delivery NOT False
+                elif product.expected_delivery == False:
+
+                    # set expected_delivery when if date_expected exists into stock.move
+                    product.expected_delivery = self._search_expected_delivery('default_code', product.default_code)
+
+
     '''
-    Seacrh purchase order by default code and name
+    Seacrh purchase order by default code and name and get expected_date field
+    stock.move -> expected_date
     '''
     def _search_expected_delivery(self, key = None, value= None):
-        date = datetime.datetime.now()
-        matching_orders = self.env['purchase.order.line'].search([
+        stock_move_data = self.env['stock.move'].search([
                 ('product_id.'+str(key), '=', value),
-            ('order_id.date_planned', '>', date),
-            ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
+            ('date_expected', '>', datetime.datetime.now()),
+            # ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
 
-        if matching_orders:
-            expected_delivery_dates = matching_orders.mapped('order_id.date_planned')
-            return expected_delivery_dates[0]
+        if stock_move_data:
+            return stock_move_data.mapped('date_expected')[0]
 
 
 
