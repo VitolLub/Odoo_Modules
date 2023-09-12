@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <!-- Display Expected Delivery on Product Grid. View kanban -->
+    <record id="view_product_purchase_list" model="ir.ui.view">
+        <field name="name">product.purchase.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="product_purchase_list" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

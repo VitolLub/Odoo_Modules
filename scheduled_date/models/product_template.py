@@ -2,7 +2,6 @@ from odoo import http,models,fields,api
 import logging,sys
 from datetime import datetime, timedelta
 import datetime
-from functools import reduce
 
 
 class ProductTemplate(models.Model):
