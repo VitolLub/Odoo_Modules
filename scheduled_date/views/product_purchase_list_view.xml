@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook/page[@name='purchase']/group[@name='purchase']" position="before">
                 <br/>
-                <h1>Purchase List</h1>
+                <group string="Purchase List" name="purchase_list"/>
                 <!-- Define the columns for the table -->
                 <tree string="Product Packagings">
                     <field name="purchase_order_ids"/>

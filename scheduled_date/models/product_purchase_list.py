@@ -6,7 +6,6 @@ import datetime
 
 class ProductPurchaseList(models.Model):
     _logger = logging.getLogger(__name__)
-
     _inherit = 'product.template'
 
     purchase_order_ids = fields.Many2many(
@@ -20,6 +19,7 @@ class ProductPurchaseList(models.Model):
         for product in self:
             purchase_orders = self.env['purchase.order'].search([
                 ('order_line.product_id.default_code', '=', product.default_code),
+                ('state', 'in', ['purchase', 'to approve','sent','draft']),  # Filter only completed or ongoing orders
             ])
 
             # select purchase order data
