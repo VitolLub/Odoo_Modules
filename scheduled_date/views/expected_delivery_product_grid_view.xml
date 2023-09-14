@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//strong[@class='o_kanban_record_title']" position="after">
                 <br/>
-                 <field name="expected_delivery" />
+                <field name="expected_delivery" />
                 <br/>
             </xpath>
         </field>

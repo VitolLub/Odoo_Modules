@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-    <!-- Display Expected Delivery on Product Grid. View kanban -->
     <record id="view_product_purchase_list" model="ir.ui.view">
-        <field name="name">product.purchase.view</field>
+        <field name="name">product.purchase.list</field>
         <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='barcode']" position="after">
-                <field name="product_purchase_list" />
+            <xpath expr="//sheet/notebook/page[@name='purchase']/group[@name='purchase']" position="before">
+                <br/>
+                <h1>Purchase List</h1>
+                <!-- Define the columns for the table -->
+                <tree string="Product Packagings">
+                    <field name="purchase_order_ids"/>
+                </tree>
             </xpath>
+
         </field>
     </record>
-
 </odoo>
+
+

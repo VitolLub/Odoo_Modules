@@ -3,22 +3,35 @@ import logging,sys
 from datetime import datetime, timedelta
 import datetime
 
+
 class ProductPurchaseList(models.Model):
     _logger = logging.getLogger(__name__)
 
-    _inherit = 'purchase.order'
-    _name = 'product_purchase_list'
+    _inherit = 'product.template'
 
-    product_purchase_list = 'dfsd'
-    '''
-    get a list of purchase orders when product default_code is equal to default_code from purchase order line
-    '''
+    purchase_order_ids = fields.Many2many(
+        'purchase.order',
+        string='Purchase Orders',
+        compute='_compute_purchase_order_ids',
+        store=True,
+    )
 
-    @api.model
-    def _get_purchase_orders(self, default_code=None):
-        purchase_orders = self.env['purchase.order'].search([
-            ('order_line.product_id.default_code', '=', default_code),
-            ('state', 'in', ['purchase', 'done']),  # Filter only completed orders
-        ])
+    def _compute_purchase_order_ids(self):
+        for product in self:
+            purchase_orders = self.env['purchase.order'].search([
+                ('order_line.product_id.default_code', '=', product.default_code),
+            ])
 
-        return purchase_orders
+            # select purchase order data
+            product.purchase_order_ids = purchase_orders
+
+
+
+
+
+
+
+
+
+
+
