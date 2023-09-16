@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo>
-    <!-- Display Expected Delivery on Product Grid. View kanban -->
+    <!-- Display Expected Delivery on Product Grid View kanban -->
     <record id="view_product_grid_form_inherit" model="ir.ui.view">
         <field name="name">custom.product.kanban</field>
         <field name="model">product.template</field>
@@ -26,13 +26,13 @@
         </field>
     </record>
 
-    <!-- Display Expected Delivery on Product Grid-->
+    <!-- Filtering Expected Delivery-->
     <record id="scheduled_date_filter_view" model="ir.ui.view">
         <field name="name">product.template.custom.filter</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_search_view"/>
         <field name="arch" type="xml">
-            <search string="Product">
+            <search>
                 <!-- Custom filter for Expected Delivery -->
                 <filter string="Expected Delivery" name="filter_expected_delivery" domain="[('expected_delivery', '>=', context_today().strftime('%Y-%m-%d'))]"/>
             </search>
