@@ -19,13 +19,12 @@ class ProductPurchaseList(models.Model):
         # if
         for product in self:
             # search data from purchase.order model
+            product_product = self.env['product.product'].search([('product_tmpl_id', '=', product.id)])
+
             purchase_orders = self.env['purchase.order'].search([
-                ('order_line.product_id.default_code', '=', product.default_code),
+                ('order_line.product_id', 'in', product_product.ids),
                 ('state', 'in', ['purchase', 'to approve','sent','draft']),  # Filter only completed or ongoing orders
             ])
-
-            # filtered partner_id from purchase_orders if purchase_orders.partner_id not in product.seller_ids
-            purchase_orders = purchase_orders.filtered(lambda r: r.partner_id in product.seller_ids.name)
 
             # assign purchase_orders to product.purchase_order_ids
             product.purchase_order_ids = purchase_orders
