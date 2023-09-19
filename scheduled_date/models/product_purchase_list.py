@@ -16,10 +16,11 @@ class ProductPurchaseList(models.Model):
     )
 
     def _compute_purchase_order_ids(self):
-        # if
         for product in self:
-            # search data from purchase.order model
+
+            # search data variations from product.product.order model by current product id
             product_product = self.env['product.product'].search([('product_tmpl_id', '=', product.id)])
+
 
             purchase_orders = self.env['purchase.order'].search([
                 ('order_line.product_id', 'in', product_product.ids),
