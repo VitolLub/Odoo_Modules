@@ -14,7 +14,7 @@
             </xpath>
         </field>
     </record>
-     <!-- Display Expected Delivery on Product Grid View list-->
+     <!-- Display Expected Delivery on Product View list-->
     <record id="view_product_list_form_inherit" model="ir.ui.view">
         <field name="name">custom.product.list</field>
         <field name="model">product.template</field>

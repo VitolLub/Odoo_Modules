@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <!-- Display Expected Delivery on Product Variation -->
+    <record id="view_product_product_expected_delivery" model="ir.ui.view">
+        <field name="name">product.product.expected.delivery</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="expected_delivery" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
