@@ -36,8 +36,8 @@ class ProductTemplate(models.Model):
 
 
     '''
-    Seacrh purchase order by default code and name and get expected_date field
-    stock.move -> expected_date
+    Search purchase order by default code and name and get expected_date field
+    stock.move -> date_expected
     '''
     def _search_date_expected(self, key = None, value= None):
         stock_move_data = self.env['stock.move'].search([

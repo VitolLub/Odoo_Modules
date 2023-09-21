@@ -19,4 +19,8 @@ class PurchaseOrder(models.Model):
                 products = order.order_line.product_id
 
                 # run _compute_expected_delivery and update expected_delivery field
+                # update expected_delivery field for product.template
                 products.product_tmpl_id._compute_expected_delivery(order.date_planned)
+
+                # update expected_delivery field for product.product
+                products._compute_expected_delivery_for_product(order.date_planned)
