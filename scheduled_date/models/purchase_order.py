@@ -7,6 +7,7 @@ class PurchaseOrder(models.Model):
 
     '''
     Update expected_delivery field when date_planned is changed
+    Purchase -> Any Orders from List
     purchase.order -> date_planned
     '''
     @api.onchange('date_planned')

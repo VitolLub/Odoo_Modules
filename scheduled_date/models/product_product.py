@@ -15,7 +15,7 @@ class ProductTemplate(models.Model):
         store=True)
 
     '''
-    computing and updating expected_delivery field
+    computing and updating expected_delivery field into product.product model
     '''
 
     def _compute_expected_delivery_for_product(self,scheduled_date_on_change=None):

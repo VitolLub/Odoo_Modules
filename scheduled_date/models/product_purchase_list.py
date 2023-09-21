@@ -3,7 +3,10 @@ import logging,sys
 from datetime import datetime, timedelta
 import datetime
 
-
+'''
+Display List of Purchase Orders in Product Form View 
+Products -> Any Product -> Purchase -> Purchase List
+'''
 class ProductPurchaseList(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.template'

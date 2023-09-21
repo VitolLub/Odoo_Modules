@@ -20,35 +20,35 @@ class ProductTemplate(models.Model):
 
     def _compute_expected_delivery(self,scheduled_date_on_change=None):
         for product in self:
-            if product.default_code != False:
+            # check if scheduled_date_on_change NOT None and rewrite expected_delivery
+            if scheduled_date_on_change != None:
 
-                # check if scheduled_date_on_change NOT None and rewrite expected_delivery
-                if scheduled_date_on_change != None:
+                # rewrite expected_delivery
+                product.expected_delivery = scheduled_date_on_change
 
-                    # rewrite expected_delivery
-                    product.expected_delivery = scheduled_date_on_change
+            # check if expected_delivery NOT False
+            elif product.expected_delivery == False:
 
-                # check if expected_delivery NOT False
-                elif product.expected_delivery == False:
-
-                    # set expected_delivery when if date_expected exists into stock.move
-                    product.expected_delivery = self._search_date_expected('default_code', product.default_code)
-
+                # set expected_delivery when if date_expected exists into stock.move
+                if product.default_code != False:
+                    product.expected_delivery = self._search_date_expected('product_id.default_code', product.default_code)
+                elif product.default_code == False:
+                    product.expected_delivery = self._search_date_expected('description_picking', product.name)
 
     '''
     Search purchase order by default code and name and get expected_date field
     stock.move -> date_expected
     '''
     def _search_date_expected(self, key = None, value= None):
+
         stock_move_data = self.env['stock.move'].search([
-                ('product_id.'+str(key), '=', value),
+                (str(key), '=', value),
             ('date_expected', '>', datetime.datetime.now()),
             ('state', 'in', ['incoming','assigned']),  # 'purchase', 'done', Filter only completed or ongoing orders
         ])
 
         if stock_move_data:
-            return stock_move_data.mapped('date_expected')[0]
-
+             return stock_move_data.mapped('date_expected')[0]
 
 
 
