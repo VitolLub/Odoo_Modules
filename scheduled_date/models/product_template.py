@@ -14,6 +14,7 @@ class ProductTemplate(models.Model):
         readonly=True,
         store=True)
 
+
     '''
     computing and updating expected_delivery field
     '''

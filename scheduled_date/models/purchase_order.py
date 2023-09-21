@@ -1,6 +1,6 @@
 from odoo import models,api
 import logging
-
+import datetime
 class PurchaseOrder(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'purchase.order'

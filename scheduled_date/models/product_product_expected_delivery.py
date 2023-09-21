@@ -1,10 +1,13 @@
-from odoo import http,models,fields,api
-import logging,sys
-from datetime import datetime, timedelta
+from odoo import models,fields
+import logging
+from datetime import datetime
 import datetime
 
-
-class ProductTemplate(models.Model):
+'''
+Adding expected_delivery field into product.product model
+Products -> Variant Product
+'''
+class ProductProductExpectedDelivery(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.product'
 
@@ -45,10 +48,9 @@ class ProductTemplate(models.Model):
         # search data from stock.move model by current product id
         stock_move_data = self.env['stock.move'].search([('product_id.id', '=', product_id),
                                                          ('date_expected', '>', datetime.datetime.now()),
-                                                         ('state', 'in', ['incoming', 'assigned','purchase', 'done']),
+                                                         ('state', 'in', ['incoming', 'assigned']), #,'purchase', 'done'
                                                          ])
         if stock_move_data:
-            self._logger.info("stock_move_data.mapped('date_expected') %s", stock_move_data.mapped('date_expected')[0])
             return stock_move_data.mapped('date_expected')[0]
 
 
