@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <!-- Vendor bill tree view modifications -->
+    <record id="account_move_ref_display" model="ir.ui.view">
+        <field name="name">invoice.move.supplier.tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="ref" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
