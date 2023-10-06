@@ -19,7 +19,7 @@
     <record id="sale_pricelist_price_add_price" model="ir.ui.view">
         <field name="name">sale.pricelist.price.add.price.tree</field>
         <field name="model">product.pricelist.item</field>
-        <field name="inherit_id" ref="product.vipstore_discounts_pricelist_rows_action"/>
+        <field name="inherit_id" ref="product.product_pricelist_item_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='price']" position="after">
                 <field name="actual_price" optional="show"/>
