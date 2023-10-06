@@ -1,7 +1,12 @@
 from odoo import models,fields,api
 import logging
 
-
+'''
+Adding actual_price field in product.pricelist.item
+actual_price display into:
+ Products → Sales price → Extra price: Actual Price
+ Sales → Products → Pricelist Items: Actual Price
+'''
 class ProductTemplate(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.pricelist.item'
