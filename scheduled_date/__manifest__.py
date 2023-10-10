@@ -9,7 +9,6 @@
         'views/expected_delivery_product_variation_view.xml',
         'views/product_purchase_list_view.xml',
         'views/account_move_ref_view.xml',
-        'views/product_pricelist_item_view.xml',
     ],
     'installable': True,
     'auto_install': False,
