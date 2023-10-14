@@ -37,16 +37,10 @@ class ProductPurchaseList(models.Model):
         string='Purchase List',
         )
 
-
-    # @api.depends('purchase_name')
     def _compute_purchase_order_ids(self,scheduled_date_on_change=None,po_name=None):
 
         for product in self:
-            current_url = request.httprequest.url
-            current_data = request.httprequest.data
-
-            # current_data to json
-            current_data = json.loads(current_data)
+            current_data = json.loads(request.httprequest.data)
 
             if current_data['params']['model'] == 'product.template':
                 # product_id = product.id
@@ -56,10 +50,6 @@ class ProductPurchaseList(models.Model):
                 # variation_id = current_data['params']['args'][0][0]
                 selector = 'variation_id', '=', current_data['params']['args'][0][0]
                 product_id = current_data['params']['args'][0]
-
-
-
-
 
             if scheduled_date_on_change != None:
                 # update date_planned field for product.template.purchase.list
@@ -75,62 +65,49 @@ class ProductPurchaseList(models.Model):
                     ('product_id', 'in', product_id),
                 ])
 
-                try:
+                for purchase_orders_lin in purchase_orders_line:
 
-                    for purchase_orders_lin in purchase_orders_line:
+                    # get all data from purchase.order model by id
+                    purchase_res = self.env['purchase.order'].search([('id', '=', purchase_orders_lin.order_id.id)])
 
-                        # get all data from purchase.order model by id
-                        purchase_res = self.env['purchase.order'].search([('id', '=', purchase_orders_lin.order_id.id)])
+                    try:
 
-                        try:
+                        product_template_purchase_list = self.env['product.template.purchase.list'].search(
+                            [(selector), ('purchase_id', '=', purchase_res.id)])
 
-                            test_test = self.env['product.template.purchase.list'].search(
-                                [(selector), ('purchase_id', '=', purchase_res.id)])
+                        # if test_test exist then update data
+                        if product_template_purchase_list:
+                            # update data
+                            product_template_purchase_list.write({
+                                'name': purchase_orders_lin.name,
+                                'quantity': purchase_orders_lin.product_qty,
+                                'purchase_id': purchase_res.id,
+                                'product_id': product.id,
+                                'price_subtotal': purchase_orders_lin.price_subtotal,
+                                'vendor': purchase_orders_lin.partner_id.name,
+                                'buyer': purchase_res.user_id.id,
+                                'source_document': purchase_res.origin,
+                                'po': purchase_orders_lin.order_id.name,
+                                'date_planned': purchase_res.date_planned
+                            })
+                        else:
+                            # create data
+                            self.env['product.template.purchase.list'].sudo().create({
+                                'name': purchase_orders_lin.name,
+                                'quantity': purchase_orders_lin.product_qty,
+                                'purchase_id': purchase_res.id,
+                                'product_id': product.id,
+                                'price_subtotal': purchase_orders_lin.price_subtotal,
+                                'vendor': purchase_orders_lin.partner_id.name,
+                                'buyer': purchase_res.user_id.id,
+                                'source_document': purchase_res.origin,
+                                'po': purchase_orders_lin.order_id.name,
+                                'date_planned': purchase_res.date_planned,
+                                'variation_id':purchase_orders_lin.product_id.id
+                            })
 
-                            # if test_test exist then update data
-                            if test_test:
-                                # update data
-                                test_test.write({
-                                    'name': purchase_orders_lin.name,
-                                    'quantity': purchase_orders_lin.product_qty,
-                                    'purchase_id': purchase_res.id,
-                                    'product_id': product.id,
-                                    'price_subtotal': purchase_orders_lin.price_subtotal,
-                                    'vendor': purchase_orders_lin.partner_id.name,
-                                    'buyer': purchase_res.user_id.id,
-                                    'source_document': purchase_res.origin,
-                                    'po': purchase_orders_lin.order_id.name,
-                                    'date_planned': purchase_res.date_planned
-                                })
-                            else:
-                                # create data
-                                save_res = self.env['product.template.purchase.list'].sudo().create({
-                                    # 'id': product.id,
-                                    'name': purchase_orders_lin.name,
-                                    'quantity': purchase_orders_lin.product_qty,
-                                    'purchase_id': purchase_res.id,
-                                    'product_id': product.id,
-                                    'price_subtotal': purchase_orders_lin.price_subtotal,
-                                    'vendor': purchase_orders_lin.partner_id.name,
-                                    'buyer': purchase_res.user_id.id,
-                                    'source_document': purchase_res.origin,
-                                    'po': purchase_orders_lin.order_id.name,
-                                    'date_planned': purchase_res.date_planned,
-                                    'variation_id':purchase_orders_lin.product_id.id
-                                })
+                    except Exception as e:
+                        self._logger.error('Error %s', e)
 
-
-                        except Exception as e:
-                            self._logger.error('Error product.template.purchase.list: %s', e)
-
-
-
-                except Exception as e:
-                    self._logger.error('Error: %s', e)
-
-
-                purchase_test = self.env['product.template.purchase.list'].search(
+                product.purchase_list = self.env['product.template.purchase.list'].search(
                     [(selector)])
-
-                product.purchase_list = purchase_test
-                self._logger.info('====================================')
