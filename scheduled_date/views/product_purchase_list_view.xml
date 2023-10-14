@@ -21,7 +21,6 @@
                         <field name="buyer"/>
                         <field name="source_document"/>
                         <field name="po"/>
-                        <!-- Add other fields from scheduled.date as needed -->
                     </tree>
                 </field>
             </xpath>
