@@ -7,12 +7,23 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook/page[@name='purchase']/group[@name='purchase']" position="before">
-                <br/>
                 <group string="Purchase List" name="purchase_list"/>
                 <!-- Define the columns for the table -->
-                <tree string="Product Packagings">
-                    <field name="purchase_name"/>
-                </tree>
+                <link rel="stylesheet" type="text/css" href="/scheduled_date/static/src/css/styles.css"/>
+                <field name="purchase_list" string="Purchase List">
+                    <group string="Purchase List" name="purchase_list"/>
+                    <tree>
+                        <field name="name"/>
+                        <field name="date_planned"/>
+                        <field name="quantity"/>
+                        <field name="price_subtotal"/>
+                        <field name="vendor"/>
+                        <field name="buyer"/>
+                        <field name="source_document"/>
+                        <field name="po"/>
+                        <!-- Add other fields from scheduled.date as needed -->
+                    </tree>
+                </field>
             </xpath>
 
         </field>

@@ -1,3 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_scheduled_date,Access Scheduled Date,model_scheduled_date,,1,1,1,1
-access_purchase_order_line_test,user_group_purchase_user,model_purchase_order_line_test,base.group_user,1,1,1,1
+"scheduled_date_user_id","scheduled date user id","scheduled_date.model_product_template_purchase_list","",1,1,1,1
