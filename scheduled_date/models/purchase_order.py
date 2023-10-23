@@ -25,6 +25,3 @@ class PurchaseOrder(models.Model):
 
                 # update expected_delivery field for product.product
                 products._compute_expected_delivery_for_product(order.date_planned)
-
-                # update date_planned field for scheduled.date
-                products.product_tmpl_id._compute_purchase_order_ids(order.date_planned,order.name)

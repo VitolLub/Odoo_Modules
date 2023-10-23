@@ -14,13 +14,12 @@
                     <group string="Purchase List" name="purchase_list"/>
                     <tree>
                         <field name="name"/>
+                        <field name="price_subtotal" string="Amount"/>
                         <field name="date_planned"/>
-                        <field name="quantity"/>
-                        <field name="price_subtotal"/>
-                        <field name="vendor"/>
-                        <field name="buyer"/>
                         <field name="source_document"/>
-                        <field name="po"/>
+                        <field name="order_id"/>
+                        <field name="partner_id" string="Vendor"/>
+                        <field name="buyer" string="Buyer"/>
                     </tree>
                 </field>
             </xpath>

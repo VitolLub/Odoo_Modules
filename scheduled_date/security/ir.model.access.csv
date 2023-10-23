@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-"scheduled_date_user_id","scheduled date user id","scheduled_date.model_product_template_purchase_list","",1,1,1,1
+"scheduled_date_user_id","scheduled date user id","scheduled_date.model_purchase_order_line","",1,1,1,1
