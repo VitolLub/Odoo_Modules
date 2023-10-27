@@ -9,7 +9,6 @@
             <xpath expr="//sheet/notebook/page[@name='purchase']/group[@name='purchase']" position="before">
                 <group string="Purchase List" name="purchase_list"/>
                 <!-- Define the columns for the table -->
-                <link rel="stylesheet" type="text/css" href="/scheduled_date/static/src/css/styles.css"/>
                 <field name="purchase_list" string="Purchase List">
                     <group string="Purchase List" name="purchase_list"/>
                     <tree>

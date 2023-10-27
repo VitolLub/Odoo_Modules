@@ -10,10 +10,10 @@ class ScheduledDate(models.Model):
     Created new field necessary to task VIPODOO-1
     '''
 
-    order_id_test = fields.Many2one('purchase.order', string='Purchase Order', related='order_id')
-    date_planned = fields.Datetime(related='order_id_test.date_planned', string='Scheduled Date')
-    source_document = fields.Char(related='order_id_test.origin', string='Source Document')
-    res_users = fields.Many2one('res.users', related='order_id_test.user_id', string='Buyer')
+    purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', related='order_id')
+    date_planned = fields.Datetime(related='purchase_order_id.date_planned', string='Scheduled Date')
+    source_document = fields.Char(related='purchase_order_id.origin', string='Source Document')
+    res_users = fields.Many2one('res.users', related='purchase_order_id.user_id', string='Buyer')
     buyer = fields.Char(related='res_users.name', string='Buyer')
 
 
