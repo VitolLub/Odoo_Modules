@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="my_purchase_inherited_view" model="ir.ui.view">
+        <field name="name">my.purchase.settings.view</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@data-key='purchase']//div[@id='auto_receipt_reminder']" position="after">
+                <!-- Add your custom text here -->
+                <div class="col-12 col-lg-6 o_setting_box" id="po_order_type">
+
+                    <div class="o_setting_right_pane">
+                        <label for="tags" string="Product tags to skip POs:"/>
+                        <field name="tags" widget="many2many_tags"/>
+                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                        <div class="text-muted">
+                            Do not create automatic POs for the tagged products
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
