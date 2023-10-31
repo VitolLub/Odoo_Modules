@@ -7,7 +7,7 @@ actual_price display into:
  Products → Sales price → Extra price: Actual Price
  Sales → Products → Pricelist Items: Actual Price
 '''
-class ProductTemplate(models.Model):
+class ProductPricelistItem(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.pricelist.item'
 

@@ -7,7 +7,7 @@ import datetime
 Adding expected_delivery field into product.product model
 Products -> Variant Product
 '''
-class ProductProductExpectedDelivery(models.Model):
+class ProductProduct(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.product'
 

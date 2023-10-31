@@ -3,22 +3,6 @@ import logging
 from odoo.http import request
 import json
 
-class ScheduledDate(models.Model):
-    _inherit= 'purchase.order.line'
-
-    '''
-    Created new field necessary to task VIPODOO-1
-    '''
-
-    purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', related='order_id')
-    date_planned = fields.Datetime(related='purchase_order_id.date_planned', string='Scheduled Date')
-    source_document = fields.Char(related='purchase_order_id.origin', string='Source Document')
-    res_users = fields.Many2one('res.users', related='purchase_order_id.user_id', string='Buyer')
-    buyer = fields.Char(related='res_users.name', string='Buyer')
-
-
-
-
 '''
 Display List of Purchase Orders in Product Form View 
 Products -> Any Product -> Purchase -> Purchase List
@@ -55,7 +39,7 @@ class ProductPurchaseList(models.Model):
             # selected orders from purchase.order.line based on current product ID or variant ID
             purchase_orders = self.env['purchase.order.line'].search([
                 ('product_id', 'in', product_id),
-                ('state', 'in', ['purchase', 'to approve', 'sent', 'draft']),
+                ('state', 'in', ['purchase', 'to approve']), #, 'sent', 'draft'
             ])
 
             # assign purchase orders to purchase_list field

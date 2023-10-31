@@ -1,1 +1,1 @@
-from . import product_pricelist_item_actual_price
+from . import product_pricelist_item
