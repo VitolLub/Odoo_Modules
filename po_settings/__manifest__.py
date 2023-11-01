@@ -1,7 +1,7 @@
 {
     'name': 'PO Settings',
-    'summary': ' ',
-    'description': '',
+    'summary': 'Add custom label to product form view after barcode input',
+    'description': 'Add custom label to product form view after barcode input',
     'author': 'Lubomir',
     'depends': ['base','product','stock','purchase','sale'],
     'data': [
