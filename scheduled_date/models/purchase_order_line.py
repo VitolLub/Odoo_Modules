@@ -11,7 +11,8 @@ class PurchaseOrderLine(models.Model):
     '''
 
     purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', related='order_id')
-    date_planned = fields.Datetime(related='purchase_order_id.date_planned', string='Scheduled Date')
-    source_document = fields.Char(related='purchase_order_id.origin', string='Source Document')
+    date_planned = fields.Datetime(related='purchase_order_id.date_planned', string='Receipt Date',store=True)
+    source_document = fields.Char(related='purchase_order_id.origin', string='Source Document', store=True)
+
     res_users = fields.Many2one('res.users', related='purchase_order_id.user_id', string='Buyer')
-    buyer = fields.Char(related='res_users.name', string='Buyer')
+    buyer = fields.Char(related='res_users.name', string='Buyer', store=True)

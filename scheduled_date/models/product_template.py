@@ -1,9 +1,17 @@
-from odoo import http,models,fields,api
-import logging,sys
-from datetime import datetime, timedelta
+from odoo import models,fields
+import logging
+from datetime import datetime
 import datetime
+import json
+from odoo.http import request
 
-
+'''
+Display List of Purchase Orders in Product Form View 
+Products -> Any Product -> Purchase -> Purchase List
+ 
+Display List of Purchase Orders in Product Form View
+Products -> Any Product -> Purchase -> Purchase List
+'''
 class ProductTemplate(models.Model):
     _logger = logging.getLogger(__name__)
     _inherit = 'product.template'
@@ -13,6 +21,12 @@ class ProductTemplate(models.Model):
         compute='_compute_expected_delivery',
         readonly=True,
         store=True)
+
+    purchase_list = fields.Many2many(
+        'purchase.order.line',
+        compute='_compute_purchase_order_ids',
+        string='Purchase List'
+    )
 
 
     '''
@@ -50,6 +64,35 @@ class ProductTemplate(models.Model):
 
         if stock_move_data:
              return stock_move_data.mapped('date_expected')[0]
+
+        # set color for purchase_order_ids
+
+
+
+    def _compute_purchase_order_ids(self):
+
+        for product in self:
+            '''
+            in current product data we can get only product ID bot variant ID
+            We need to get variant ID if user selected product into Products -> Product Variants
+            if user selected product in Products -> Products when we just get product ID 
+            All depents from view:
+                Products -> Products = Display all purchase orders for selected product
+                Products -> Product Variants = Display purchase orders related to selected variant
+            '''
+            current_url_data = json.loads(request.httprequest.data)
+            if current_url_data['params']['model'] == 'product.template':
+                product_id = product.product_variant_ids.ids
+            else:
+                product_id = current_url_data['params']['args'][0]
+
+            # selected orders from purchase.order.line based on current product ID or variant ID
+            purchase_orders = self.env['purchase.order.line'].search([
+                ('product_id', 'in', product_id),
+                ('state', 'in', ['purchase', 'to approve', 'sent', 'draft'])  # Filter only completed or ongoing orders
+            ])
+
+            product.purchase_list = purchase_orders
 
 
 
