@@ -13,7 +13,7 @@
                     <group string="Purchase List" name="purchase_list"/>
                     <tree>
                         <field name="name" string="Name"/>
-                        <field name="amount_order" string="Amount"/>
+                        <field name="qty_dem_rec" string="Qty dem / rec"/>
                         <field name="date_planned"/>
                         <field name="source_document"/>
                         <field name="order_id"/>
