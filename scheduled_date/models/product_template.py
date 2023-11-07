@@ -89,11 +89,12 @@ class ProductTemplate(models.Model):
             # selected orders from purchase.order.line based on current product ID or variant ID and product_qty != qty_received
             purchase_orders = self.env['purchase.order.line'].search([
                 ('product_id', 'in', product_id),
-                ('product_qty', '!=', 'qty_received'),
-                ('state', 'in', ['purchase'])  # Filter only completed or ongoing orders
-            ])
+                ('state', 'in', ['purchase']),  # Filter only completed or ongoing orders
 
-            product.purchase_list = purchase_orders
+            ])
+            filtered_orders = purchase_orders.filtered(lambda order: float(order.product_qty) != float(order.qty_received))
+
+            product.purchase_list = filtered_orders
 
 
 
