@@ -16,3 +16,9 @@ class PurchaseOrderLine(models.Model):
 
     res_users = fields.Many2one('res.users', related='purchase_order_id.user_id', string='Buyer')
     buyer = fields.Char(related='res_users.name', string='Buyer', store=True)
+    amount_order = fields.Char(string='Amount', compute='_compute_amount_order')
+
+
+    def _compute_amount_order(self):
+        for line in self:
+            line.amount_order = str(line.product_qty) +" / "+ str(line.qty_received)

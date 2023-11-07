@@ -86,10 +86,11 @@ class ProductTemplate(models.Model):
             else:
                 product_id = current_url_data['params']['args'][0]
 
-            # selected orders from purchase.order.line based on current product ID or variant ID
+            # selected orders from purchase.order.line based on current product ID or variant ID and product_qty != qty_received
             purchase_orders = self.env['purchase.order.line'].search([
                 ('product_id', 'in', product_id),
-                ('state', 'in', ['purchase', 'to approve', 'sent', 'draft'])  # Filter only completed or ongoing orders
+                ('product_qty', '!=', 'qty_received'),
+                ('state', 'in', ['purchase'])  # Filter only completed or ongoing orders
             ])
 
             product.purchase_list = purchase_orders

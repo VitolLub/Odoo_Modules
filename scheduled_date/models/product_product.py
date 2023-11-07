@@ -48,7 +48,7 @@ class ProductProduct(models.Model):
         # search data from stock.move model by current product id
         stock_move_data = self.env['stock.move'].search([('product_id.id', '=', product_id),
                                                          ('date_expected', '>', datetime.datetime.now()),
-                                                         ('state', 'in', ['incoming', 'assigned']), #,'purchase', 'done'
+                                                         ('state', 'in', ['purchase', 'to approve', 'sent', 'draft']), #,'purchase', 'done'
                                                          ])
         if stock_move_data:
             return stock_move_data.mapped('date_expected')[0]

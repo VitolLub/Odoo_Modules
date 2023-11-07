@@ -12,8 +12,8 @@
                 <field name="purchase_list" string="Purchase List">
                     <group string="Purchase List" name="purchase_list"/>
                     <tree>
-                        <field name="name"/>
-                        <field name="price_subtotal" string="Amount"/>
+                        <field name="name" string="Name"/>
+                        <field name="amount_order" string="Amount"/>
                         <field name="date_planned"/>
                         <field name="source_document"/>
                         <field name="order_id"/>
