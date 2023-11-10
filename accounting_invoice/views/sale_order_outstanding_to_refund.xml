@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <!-- Vendor bill tree view modifications -->
+    <record id="account_move_ref_display" model="ir.ui.view">
+        <field name="name">outstending.refund.sale.order</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="amount_display"
+                       decoration-success="amount_display == 'OK'"
+                    decoration-danger="amount_display == 'Not invoiced'"
+                    widget="badge"
+                       optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
